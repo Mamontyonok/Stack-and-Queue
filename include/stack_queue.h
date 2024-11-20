@@ -99,9 +99,13 @@ class Stack : public Vector<T> {
         return T();
     }
     void insert(T elem, int index) {};
-    //метод erase
+    using Vector<T>::push_back;
+    using Vector<T>::push_front;
+    using Vector<T>::back;
+    using Vector<T>::pop_back;
+    using Vector<T>::pop_front;
+    using Vector<T>::erase;
 public:
-    using Vector<T>::operator[];
     Stack(size_t n = 10) : Vector<T>(n) {};
     void push(T elem) {
         this->push_back(elem);
@@ -117,20 +121,26 @@ public:
 template <typename T>
 class Queue : public Vector<T> {
     using Vector<T>::sz;
+    using Vector<T>::push_back;
+    using Vector<T>::push_front;
+    using Vector<T>::back;
+    using Vector<T>::pop_back;
+    using Vector<T>::pop_front;
+    using Vector<T>::erase;
     size_t front;
-    size_t back;
+    size_t bck;
 public:
-    Queue(size_t _capacity = 10) : Vector<T>(_capacity), front(0), back(0) {}
+    Queue(size_t _capacity = 10) : Vector<T>(_capacity), front(0), bck(0) {}
     void push(T elem) noexcept {
         this->push_back(elem);
-        if(back == this->cap())
-            back = 0;
-        else back++;
+        if(bck == this->cap())
+            bck = 0;
+        else bck++;
     }
     void pop() {
         if (this->IsEmpty())
             throw logic_error("Queue is empty");
-        if (front || this->cap())
+        if (front == this->cap())
             front = 0;
         else front++;
         sz--;
@@ -139,9 +149,9 @@ public:
         return this->pMem[front];
     }
     T& GetBack() {
-        if (back == 0)
+        if (bck == 0)
             return this->pMem[this->cap() - 1];
-        return this->pMem[back - 1];
+        return this->pMem[bck - 1];
     }
 };
 
@@ -151,6 +161,26 @@ class QueueSt{
     Stack<T> st2;
     size_t sz;
     size_t capacity;
+    void push_back(T elem) noexcept {
+        sz++;
+        st1.push(elem);
+    }
+    void pop_front() {
+        if (this->IsEmpty())
+            throw logic_error("Queue is empty");
+        sz--;
+        T temp = T();
+        if (!st2.IsEmpty())
+            st2.pop();
+        else {
+            while (!st1.IsEmpty()) {
+                temp = st1.top();
+                st2.push(temp);
+                st1.pop();
+            }
+            st2.pop();
+        }
+    }
 public:
     QueueSt(size_t _capacity = 10) : st1(_capacity), st2(_capacity), sz(0), capacity(_capacity) {}
     bool IsEmpty() noexcept {
@@ -175,28 +205,8 @@ public:
     T& GetF() {
         return front();
     }
-    void push_back(T elem) noexcept {
-        sz++;
-        st1.push(elem);
-    }
     void IncQueue(T elem) noexcept {
         this->push_back(elem);
-    }
-    void pop_front() {
-        if (this->IsEmpty())
-            throw logic_error("Queue is empty");
-        sz--;
-        T temp = T();
-        if (!st2.IsEmpty())
-            st2.pop();
-        else {
-            while (!st1.IsEmpty()) {
-                temp = st1.top();
-                st2.push(temp);
-                st1.pop();
-            }
-            st2.pop();
-        }
     }
     void DeQueue() {
         pop_front();

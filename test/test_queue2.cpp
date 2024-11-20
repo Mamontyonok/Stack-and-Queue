@@ -24,7 +24,7 @@ TEST(QueueSt, can_size)
 {
     QueueSt<int> q(7);
     for (int i = 0; i < 4; i++)
-        q.push_back(i * i);
+        q.IncQueue(i * i);
     EXPECT_EQ(4, q.size());
 }
 
