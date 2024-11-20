@@ -40,15 +40,15 @@ int main()
     
     for (int i = 0 ; i < Expression.length(); i++){
         if (IsOpenBracket(Expression[i]))
-            st.push_back(Expression[i]);
+            st.push(Expression[i]);
         if(IsCloseBracket(Expression[i])){
             if (st.IsEmpty())
                 flag = true;
             else{
-                if (st.back() != GetOpenBracket(Expression[i]))
+                if (st.top() != GetOpenBracket(Expression[i]))
                     flag = true;
                 else
-                    st.pop_back();
+                    st.pop();
             }
         }
     }
